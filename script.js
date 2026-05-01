@@ -1,3 +1,5 @@
+const BASE_URL = 'https://task-reminder-app-i748.onrender.com';
+
 let tasks = [];
 let currentFilter = 'all';
 
@@ -10,7 +12,7 @@ function loadTasks() {
         return;
     }
 
-    fetch(`http://localhost:3000/tasks/${user_id}`)
+    fetch(`${BASE_URL}/tasks/${user_id}`)
         .then(res => res.json())
         .then(data => {
             tasks = data;
@@ -43,7 +45,7 @@ function addTask() {
         return;
     }
 
-    fetch('http://localhost:3000/add-task', {
+    fetch(`${BASE_URL}/add-task`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -127,39 +129,34 @@ function showTasks() {
 function deleteTask(id) {
     if (!confirm('هل أنت متأكد من حذف المهمة؟')) return;
 
-    fetch(`http://localhost:3000/delete-task/${id}`, {
+    fetch(`${BASE_URL}/delete-task/${id}`, {
         method: 'DELETE'
     })
     .then(res => res.json())
     .then(data => {
-        if (data.success) {
-            loadTasks();
-        }
+        if (data.success) loadTasks();
     })
     .catch(err => console.log(err));
 }
 
 function completeTask(id) {
-    fetch(`http://localhost:3000/complete-task/${id}`, {
+    fetch(`${BASE_URL}/complete-task/${id}`, {
         method: 'PUT'
     })
     .then(res => res.json())
     .then(data => {
-        if (data.success) {
-            loadTasks();
-        }
+        if (data.success) loadTasks();
     })
     .catch(err => console.log(err));
 }
 
 function editTask(id) {
     const task = tasks.find(t => t.id === id);
-
     const newText = prompt('عدّل المهمة:', task.text);
 
     if (!newText || newText.trim() === '') return;
 
-    fetch(`http://localhost:3000/update-task/${id}`, {
+    fetch(`${BASE_URL}/update-task/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -168,9 +165,7 @@ function editTask(id) {
     })
     .then(res => res.json())
     .then(data => {
-        if (data.success) {
-            loadTasks();
-        }
+        if (data.success) loadTasks();
     })
     .catch(err => console.log(err));
 }
@@ -183,7 +178,6 @@ function filterTasks(category) {
     });
 
     event.target.classList.add('active');
-
     showTasks();
 }
 
