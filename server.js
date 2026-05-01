@@ -147,6 +147,10 @@ cron.schedule('0 9 * * *', async () => {
     }
 });
 
+app.get('/', (req, res) => {
+    res.send('Task Reminder Backend is running ✅');
+});
+
 // ================= START SERVER =================
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
