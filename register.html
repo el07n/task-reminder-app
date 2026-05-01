@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إنشاء حساب</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 20% 20%, #ec489955, transparent 35%),
+        radial-gradient(circle at 80% 80%, #22d3ee55, transparent 35%),
+        linear-gradient(135deg, #111827, #1e1b4b, #312e81);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    color: white;
+}
+
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.45;
+    animation: float 6s ease-in-out infinite;
+}
+
+.shape.one {
+    width: 190px;
+    height: 190px;
+    background: #a855f7;
+    top: 70px;
+    left: 110px;
+}
+
+.shape.two {
+    width: 135px;
+    height: 135px;
+    background: #22d3ee;
+    bottom: 85px;
+    right: 120px;
+    animation-delay: 2s;
+}
+
+.shape.three {
+    width: 95px;
+    height: 95px;
+    background: #ec4899;
+    top: 65%;
+    left: 13%;
+    animation-delay: 1s;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-25px); }
+}
+
+.register-card {
+    position: relative;
+    z-index: 2;
+    width: 410px;
+    padding: 40px;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.09);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+    text-align: center;
+}
+
+.logo {
+    width: 78px;
+    height: 78px;
+    margin: 0 auto 18px;
+    border-radius: 24px;
+    background: linear-gradient(135deg, #ec4899, #8b5cf6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 36px;
+    box-shadow: 0 15px 35px rgba(236, 72, 153, 0.45);
+}
+
+h2 {
+    margin: 0;
+    font-size: 28px;
+}
+
+.subtitle {
+    margin: 10px 0 28px;
+    color: #d8d6ee;
+    font-size: 14px;
+}
+
+.message {
+    display: none;
+    padding: 11px;
+    border-radius: 15px;
+    margin-bottom: 16px;
+    font-size: 13px;
+}
+
+.error {
+    background: rgba(239, 68, 68, 0.18);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    color: #fecaca;
+}
+
+.success {
+    background: rgba(34, 197, 94, 0.18);
+    border: 1px solid rgba(34, 197, 94, 0.35);
+    color: #bbf7d0;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.input-group span {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.85;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 15px 50px 15px 15px;
+    border-radius: 17px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    outline: none;
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
+    font-size: 15px;
+    transition: 0.3s;
+}
+
+.input-group input::placeholder {
+    color: #c9c6d8;
+}
+
+.input-group input:focus {
+    border-color: #f0abfc;
+    box-shadow: 0 0 0 4px rgba(240, 171, 252, 0.18);
+}
+
+.register-btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #ec4899, #8b5cf6, #06b6d4);
+    color: white;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 15px 35px rgba(236, 72, 153, 0.35);
+}
+
+.register-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 45px rgba(236, 72, 153, 0.55);
+}
+
+.register-btn:active {
+    transform: scale(0.98);
+}
+
+.login-text {
+    margin-top: 24px;
+    color: #dedbf4;
+    font-size: 14px;
+}
+
+.login-text a {
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+@media (max-width: 450px) {
+    .register-card {
+        width: 90%;
+        padding: 32px 24px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="shape one"></div>
+<div class="shape two"></div>
+<div class="shape three"></div>
+
+<div class="register-card">
+    <div class="logo">🚀</div>
+
+    <h2>انضم لعالم المهام</h2>
+    <p class="subtitle">أنشئ حسابك وخلّي أبو عمير يذكّرك بمهامك</p>
+
+    <div id="messageBox" class="message"></div>
+
+    <div class="input-group">
+        <span>👤</span>
+        <input type="text" id="name" placeholder="الاسم">
+    </div>
+
+    <div class="input-group">
+        <span>✉️</span>
+        <input type="email" id="email" placeholder="الإيميل">
+    </div>
+
+    <div class="input-group">
+        <span>🔒</span>
+        <input type="password" id="password" placeholder="كلمة المرور">
+    </div>
+
+    <button class="register-btn" onclick="register()">إنشاء حساب</button>
+
+    <p class="login-text">
+        عندك حساب؟
+        <a href="login.html">سجّل دخول</a>
+    </p>
+</div>
+
+<script>
+function showMessage(text, type) {
+    const box = document.getElementById('messageBox');
+    box.textContent = text;
+    box.className = 'message ' + type;
+    box.style.display = 'block';
+}
+
+function register() {
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    if (!name || !email || !password) {
+        showMessage('عبّي كل الخانات أولاً', 'error');
+        return;
+    }
+
+    fetch('http://localhost:3000/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            showMessage('تم إنشاء الحساب بنجاح ✅', 'success');
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 1200);
+        } else {
+            showMessage(data.message || 'الإيميل مستخدم من قبل', 'error');
+        }
+    })
+    .catch(() => {
+        showMessage('تأكد أن السيرفر شغال', 'error');
+    });
+}
+</script>
+
+</body>
+</html>

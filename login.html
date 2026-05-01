@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تسجيل الدخول</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background:
+        radial-gradient(circle at top left, #7c3aed55, transparent 35%),
+        radial-gradient(circle at bottom right, #2563eb55, transparent 35%),
+        linear-gradient(135deg, #17172f, #302653, #1d1b3a);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    overflow: hidden;
+}
+
+.circle {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(2px);
+    opacity: 0.35;
+    animation: float 6s ease-in-out infinite;
+}
+
+.circle.one {
+    width: 180px;
+    height: 180px;
+    background: #8b5cf6;
+    top: 80px;
+    left: 120px;
+}
+
+.circle.two {
+    width: 130px;
+    height: 130px;
+    background: #38bdf8;
+    bottom: 90px;
+    right: 150px;
+    animation-delay: 2s;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-25px);
+    }
+}
+
+.login-card {
+    position: relative;
+    width: 390px;
+    padding: 38px;
+    border-radius: 28px;
+    background: rgba(255, 255, 255, 0.09);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255,255,255,0.18);
+    box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+    text-align: center;
+    z-index: 2;
+}
+
+.logo {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 16px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #667eea, #9f7aea);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 34px;
+    box-shadow: 0 12px 30px rgba(124, 58, 237, 0.45);
+}
+
+h2 {
+    margin: 0;
+    font-size: 30px;
+}
+
+.subtitle {
+    margin: 10px 0 28px;
+    color: #d6d3e8;
+    font-size: 14px;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.input-group span {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.8;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 15px 48px 15px 15px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.14);
+    outline: none;
+    background: rgba(255,255,255,0.11);
+    color: white;
+    font-size: 15px;
+    transition: 0.3s;
+}
+
+.input-group input::placeholder {
+    color: #c9c6d8;
+}
+
+.input-group input:focus {
+    border-color: #a78bfa;
+    box-shadow: 0 0 0 4px rgba(167,139,250,0.18);
+}
+
+.options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    margin: 4px 0 20px;
+    color: #d6d3e8;
+}
+
+.options a {
+    color: #c4b5fd;
+    text-decoration: none;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 17px;
+    background: linear-gradient(135deg, #667eea, #9f7aea);
+    color: white;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 12px 30px rgba(124, 58, 237, 0.35);
+}
+
+.login-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 35px rgba(124, 58, 237, 0.5);
+}
+
+.login-btn:active {
+    transform: scale(0.98);
+}
+
+.register-text {
+    margin-top: 24px;
+    font-size: 14px;
+    color: #d6d3e8;
+}
+
+.register-text a {
+    color: #ffffff;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.error {
+    display: none;
+    background: rgba(239, 68, 68, 0.18);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    padding: 10px;
+    border-radius: 14px;
+    margin-bottom: 15px;
+    font-size: 13px;
+}
+
+@media (max-width: 450px) {
+    .login-card {
+        width: 90%;
+        padding: 30px 22px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="circle one"></div>
+<div class="circle two"></div>
+
+<div class="login-card">
+    <div class="logo">✅</div>
+
+<h2>أبو عمير معاكم، لا خوف عليكم</h2>
+    <p class="subtitle">سجّل دخولك لإدارة مهامك وتنبيهاتك</p>
+
+    <div id="errorBox" class="error">الإيميل أو كلمة المرور غير صحيحة</div>
+
+    <div class="input-group">
+        <span>✉️</span>
+        <input type="email" id="email" placeholder="الإيميل">
+    </div>
+
+    <div class="input-group">
+        <span>🔒</span>
+        <input type="password" id="password" placeholder="كلمة المرور">
+    </div>
+
+    <div class="options">
+        <label>
+            <input type="checkbox"> تذكرني
+        </label>
+        <a href="#">نسيت كلمة المرور؟</a>
+    </div>
+
+    <button class="login-btn" onclick="login()">دخول</button>
+
+    <p class="register-text">
+        ما عندك حساب؟
+        <a href="register.html">سجل الآن</a>
+    </p>
+</div>
+
+<script>
+function login() {
+    const errorBox = document.getElementById('errorBox');
+
+    fetch('http://localhost:3000/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            email: document.getElementById('email').value,
+            password: document.getElementById('password').value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            localStorage.setItem('user_id', data.user.id);
+            localStorage.setItem('user_email', data.user.email);
+            window.location.href = 'index.html';
+        } else {
+            errorBox.style.display = 'block';
+        }
+    })
+    .catch(() => {
+        errorBox.textContent = 'تأكد أن السيرفر شغال';
+        errorBox.style.display = 'block';
+    });
+}
+</script>
+
+</body>
+</html>
