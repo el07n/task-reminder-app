@@ -35,39 +35,112 @@ app.get('/', (req, res) => {
 
 // REGISTER
 app.post('/register', async (req, res) => {
-    const { name, email, password } = req.body;
+    let { name, email, password } = req.body;
+
+    console.log('REGISTER BODY:', req.body);
+
+    if (!name || !email || !password) {
+        return res.json({
+            success: false,
+            message: 'Please fill all fields'
+        });
+    }
+
+    name = name.trim();
+    email = email.trim().toLowerCase();
+    password = password.trim();
 
     try {
-        await pool.query(
-            'INSERT INTO users (name, email, password) VALUES ($1, $2, $3)',
+        // Check if email already exists
+        const existingUser = await pool.query(
+            'SELECT id FROM users WHERE LOWER(email) = $1',
+            [email]
+        );
+
+        if (existingUser.rows.length > 0) {
+            return res.json({
+                success: false,
+                message: 'Email already exists'
+            });
+        }
+
+        // Insert new user
+        const result = await pool.query(
+            'INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id, name, email',
             [name, email, password]
         );
 
-        res.json({ success: true });
+        res.json({
+            success: true,
+            user: result.rows[0]
+        });
+
     } catch (err) {
-        console.log('REGISTER ERROR:', err.message);
-        res.json({ success: false, message: 'Email already exists' });
+        console.log('REGISTER ERROR:', err);
+
+        res.json({
+            success: false,
+            message: 'Database error: ' + err.message
+        });
     }
 });
 
 // LOGIN
 app.post('/login', async (req, res) => {
-    const { email, password } = req.body;
+    let { email, password } = req.body;
+
+    console.log('LOGIN BODY:', req.body);
+
+    if (!email || !password) {
+        return res.json({
+            success: false,
+            message: 'Please fill all fields'
+        });
+    }
+
+    email = email.trim().toLowerCase();
+    password = password.trim();
 
     try {
+        // Search user by email only
         const result = await pool.query(
-            'SELECT * FROM users WHERE email = $1 AND password = $2',
-            [email, password]
+            'SELECT * FROM users WHERE LOWER(email) = $1',
+            [email]
         );
 
-        if (result.rows.length > 0) {
-            res.json({ success: true, user: result.rows[0] });
-        } else {
-            res.json({ success: false, message: 'Invalid login' });
+        if (result.rows.length === 0) {
+            return res.json({
+                success: false,
+                message: 'Invalid email or password'
+            });
         }
+
+        const user = result.rows[0];
+
+        // Compare password
+        if (user.password !== password) {
+            return res.json({
+                success: false,
+                message: 'Invalid email or password'
+            });
+        }
+
+        res.json({
+            success: true,
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email
+            }
+        });
+
     } catch (err) {
-        console.log('LOGIN ERROR:', err.message);
-        res.json({ success: false });
+        console.log('LOGIN ERROR:', err);
+
+        res.json({
+            success: false,
+            message: 'Server error: ' + err.message
+        });
     }
 });
 
@@ -76,19 +149,27 @@ app.post('/add-task', async (req, res) => {
     const { user_id, text, category, date } = req.body;
 
     if (!user_id || !text || !date) {
-        return res.status(400).json({ success: false, error: 'Missing data' });
+        return res.status(400).json({
+            success: false,
+            error: 'Missing data'
+        });
     }
 
     try {
         await pool.query(
             'INSERT INTO tasks (user_id, text, category, date) VALUES ($1, $2, $3, $4)',
-            [user_id, text, category, date]
+            [user_id, text.trim(), category || 'General', date]
         );
 
         res.json({ success: true });
+
     } catch (err) {
         console.log('ADD TASK ERROR:', err.message);
-        res.status(500).json({ success: false, error: 'Database error' });
+
+        res.status(500).json({
+            success: false,
+            error: 'Database error'
+        });
     }
 });
 
@@ -103,9 +184,13 @@ app.get('/tasks/:user_id', async (req, res) => {
         );
 
         res.json(result.rows);
+
     } catch (err) {
         console.log('GET TASKS ERROR:', err.message);
-        res.status(500).json({ error: 'Database error' });
+
+        res.status(500).json({
+            error: 'Database error'
+        });
     }
 });
 
@@ -114,11 +199,20 @@ app.delete('/delete-task/:id', async (req, res) => {
     const id = req.params.id;
 
     try {
-        await pool.query('DELETE FROM tasks WHERE id = $1', [id]);
+        await pool.query(
+            'DELETE FROM tasks WHERE id = $1',
+            [id]
+        );
+
         res.json({ success: true });
+
     } catch (err) {
         console.log('DELETE ERROR:', err.message);
-        res.status(500).json({ error: 'Database error' });
+
+        res.status(500).json({
+            success: false,
+            error: 'Database error'
+        });
     }
 });
 
@@ -133,9 +227,14 @@ app.put('/complete-task/:id', async (req, res) => {
         );
 
         res.json({ success: true });
+
     } catch (err) {
         console.log('COMPLETE ERROR:', err.message);
-        res.status(500).json({ error: 'Database error' });
+
+        res.status(500).json({
+            success: false,
+            error: 'Database error'
+        });
     }
 });
 
@@ -144,16 +243,28 @@ app.put('/update-task/:id', async (req, res) => {
     const id = req.params.id;
     const { text } = req.body;
 
+    if (!text || text.trim() === '') {
+        return res.status(400).json({
+            success: false,
+            error: 'Task text is required'
+        });
+    }
+
     try {
         await pool.query(
             'UPDATE tasks SET text = $1 WHERE id = $2',
-            [text, id]
+            [text.trim(), id]
         );
 
         res.json({ success: true });
+
     } catch (err) {
         console.log('UPDATE ERROR:', err.message);
-        res.status(500).json({ error: 'Database error' });
+
+        res.status(500).json({
+            success: false,
+            error: 'Database error'
+        });
     }
 });
 
@@ -186,12 +297,14 @@ cron.schedule('0 9 * * *', async () => {
                 );
 
                 console.log(`Email sent to ${task.email}`);
+
             } catch (emailErr) {
                 console.log('EMAIL ERROR:', emailErr.message);
             }
         }
 
         console.log('Checked reminders');
+
     } catch (err) {
         console.log('REMINDER ERROR:', err.message);
     }
