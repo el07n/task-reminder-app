@@ -5,30 +5,35 @@ const nodemailer = require('nodemailer');
 const cron = require('node-cron');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
 
-// ================= DATABASE =================
+// DATABASE
 const pool = new Pool({
-    connectionString: 'postgresql://postgres.aqmbnrqhobpnnpncgnnr:Omaralgaafari@aws-1-ap-southeast-1.pooler.supabase.com:6543/postgres',
+    connectionString: process.env.DATABASE_URL,
     ssl: {
         rejectUnauthorized: false
     },
     family: 4
 });
 
-// ================= EMAIL =================
+// EMAIL
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'mrbdalmza@gmail.com',
-        pass: 'ztuuwemjcasfdefr'
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
     }
 });
 
-// ================= REGISTER =================
+// HOME
+app.get('/', (req, res) => {
+    res.send('Task Reminder Backend is running ✅');
+});
+
+// REGISTER
 app.post('/register', async (req, res) => {
     const { name, email, password } = req.body;
 
@@ -45,7 +50,7 @@ app.post('/register', async (req, res) => {
     }
 });
 
-// ================= LOGIN =================
+// LOGIN
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
@@ -66,15 +71,12 @@ app.post('/login', async (req, res) => {
     }
 });
 
-// ================= ADD TASK =================
+// ADD TASK
 app.post('/add-task', async (req, res) => {
     const { user_id, text, category, date } = req.body;
 
     if (!user_id || !text || !date) {
-        return res.status(400).json({
-            success: false,
-            error: 'Missing data'
-        });
+        return res.status(400).json({ success: false, error: 'Missing data' });
     }
 
     try {
@@ -90,7 +92,7 @@ app.post('/add-task', async (req, res) => {
     }
 });
 
-// ================= GET TASKS =================
+// GET TASKS
 app.get('/tasks/:user_id', async (req, res) => {
     const user_id = req.params.user_id;
 
@@ -107,7 +109,55 @@ app.get('/tasks/:user_id', async (req, res) => {
     }
 });
 
-// ================= EMAIL REMINDER =================
+// DELETE TASK
+app.delete('/delete-task/:id', async (req, res) => {
+    const id = req.params.id;
+
+    try {
+        await pool.query('DELETE FROM tasks WHERE id = $1', [id]);
+        res.json({ success: true });
+    } catch (err) {
+        console.log('DELETE ERROR:', err.message);
+        res.status(500).json({ error: 'Database error' });
+    }
+});
+
+// COMPLETE / UNCOMPLETE TASK
+app.put('/complete-task/:id', async (req, res) => {
+    const id = req.params.id;
+
+    try {
+        await pool.query(
+            'UPDATE tasks SET completed = CASE WHEN completed = 1 THEN 0 ELSE 1 END WHERE id = $1',
+            [id]
+        );
+
+        res.json({ success: true });
+    } catch (err) {
+        console.log('COMPLETE ERROR:', err.message);
+        res.status(500).json({ error: 'Database error' });
+    }
+});
+
+// UPDATE TASK
+app.put('/update-task/:id', async (req, res) => {
+    const id = req.params.id;
+    const { text } = req.body;
+
+    try {
+        await pool.query(
+            'UPDATE tasks SET text = $1 WHERE id = $2',
+            [text, id]
+        );
+
+        res.json({ success: true });
+    } catch (err) {
+        console.log('UPDATE ERROR:', err.message);
+        res.status(500).json({ error: 'Database error' });
+    }
+});
+
+// EMAIL REMINDER EVERY DAY AT 9 AM
 cron.schedule('0 9 * * *', async () => {
     const today = new Date().toISOString().split('T')[0];
 
@@ -124,7 +174,7 @@ cron.schedule('0 9 * * *', async () => {
         for (const task of result.rows) {
             try {
                 await transporter.sendMail({
-                    from: 'mrbdalmza@gmail.com',
+                    from: process.env.EMAIL_USER,
                     to: task.email,
                     subject: 'Task Reminder',
                     text: `لا تنسَ: ${task.text} 💪 شد حيلك اليوم!`
@@ -147,58 +197,6 @@ cron.schedule('0 9 * * *', async () => {
     }
 });
 
-app.get('/', (req, res) => {
-    res.send('Task Reminder Backend is running ✅');
-});
-
-// ================= START SERVER =================
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
-// ================= DELETE TASK =================
-app.delete('/delete-task/:id', async (req, res) => {
-    const id = req.params.id;
-
-    try {
-        await pool.query('DELETE FROM tasks WHERE id = $1', [id]);
-        res.json({ success: true });
-    } catch (err) {
-        console.log('DELETE ERROR:', err.message);
-        res.status(500).json({ error: 'Database error' });
-    }
-});
-
-// ================= COMPLETE TASK =================
-app.put('/complete-task/:id', async (req, res) => {
-    const id = req.params.id;
-
-    try {
-        await pool.query(
-            'UPDATE tasks SET completed = 1 WHERE id = $1',
-            [id]
-        );
-
-        res.json({ success: true });
-    } catch (err) {
-        console.log('COMPLETE ERROR:', err.message);
-        res.status(500).json({ error: 'Database error' });
-    }
-});
-
-// ================= UPDATE TASK =================
-app.put('/update-task/:id', async (req, res) => {
-    const id = req.params.id;
-    const { text } = req.body;
-
-    try {
-        await pool.query(
-            'UPDATE tasks SET text = $1 WHERE id = $2',
-            [text, id]
-        );
-
-        res.json({ success: true });
-    } catch (err) {
-        console.log('UPDATE ERROR:', err.message);
-        res.status(500).json({ error: 'Database error' });
-    }
+    console.log(`Server running on port ${PORT}`);
 });
