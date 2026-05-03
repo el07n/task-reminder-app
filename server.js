@@ -22,6 +22,15 @@ const pool = new Pool({
     family: 4
 });
 
+console.log('DB URL CHECK:', process.env.DATABASE_URL ? 'EXISTS' : 'MISSING');
+
+if (process.env.DATABASE_URL) {
+    const dbUrl = new URL(process.env.DATABASE_URL);
+    console.log('DB USER:', dbUrl.username);
+    console.log('DB HOST:', dbUrl.hostname);
+    console.log('DB PORT:', dbUrl.port);
+}
+
 // EMAIL
 const transporter = nodemailer.createTransport({
     service: 'gmail',
