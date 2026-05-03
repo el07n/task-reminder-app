@@ -253,7 +253,7 @@ function register() {
         return;
     }
 
-    fetch('https://task-reminder-app-i748.onrender.com/register', {
+    fetch('https://task-reminder-app-i748.onrender.com', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password })
