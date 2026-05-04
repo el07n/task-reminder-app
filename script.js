@@ -1,4 +1,4 @@
-const BASE_URL = 'https://task-reminder-app-i748.onrender.com/login';
+const BASE_URL = 'https://task-reminder-app-i748.onrender.com';
 
 let tasks = [];
 let currentFilter = 'all';
@@ -18,7 +18,10 @@ function loadTasks() {
             tasks = data;
             showTasks();
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            console.error('LOAD TASKS ERROR:', err);
+            alert('Load tasks error: ' + err.message);
+        });
 }
 
 function addTask() {
@@ -55,17 +58,21 @@ function addTask() {
             date: date.value
         })
     })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            input.value = '';
-            date.value = '';
-            loadTasks();
-        } else {
-            alert('صار خطأ في حفظ المهمة');
+    .then(async res => {
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+            throw new Error(data.error || 'Failed to add task');
         }
+
+        input.value = '';
+        date.value = '';
+        loadTasks();
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+        console.error('ADD TASK ERROR:', err);
+        alert('Add task error: ' + err.message);
+    });
 }
 
 function showTasks() {
@@ -136,7 +143,7 @@ function deleteTask(id) {
     .then(data => {
         if (data.success) loadTasks();
     })
-    .catch(err => console.log(err));
+    .catch(err => console.error('DELETE TASK ERROR:', err));
 }
 
 function completeTask(id) {
@@ -147,11 +154,17 @@ function completeTask(id) {
     .then(data => {
         if (data.success) loadTasks();
     })
-    .catch(err => console.log(err));
+    .catch(err => console.error('COMPLETE TASK ERROR:', err));
 }
 
 function editTask(id) {
     const task = tasks.find(t => t.id === id);
+
+    if (!task) {
+        alert('Task not found');
+        return;
+    }
+
     const newText = prompt('عدّل المهمة:', task.text);
 
     if (!newText || newText.trim() === '') return;
@@ -167,7 +180,7 @@ function editTask(id) {
     .then(data => {
         if (data.success) loadTasks();
     })
-    .catch(err => console.log(err));
+    .catch(err => console.error('UPDATE TASK ERROR:', err));
 }
 
 function filterTasks(category) {
@@ -177,16 +190,23 @@ function filterTasks(category) {
         btn.classList.remove('active');
     });
 
-    event.target.classList.add('active');
+    if (event && event.target) {
+        event.target.classList.add('active');
+    }
+
     showTasks();
 }
 
 document.addEventListener('DOMContentLoaded', function () {
     loadTasks();
 
-    document.getElementById('taskInput').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            addTask();
-        }
-    });
+    const taskInput = document.getElementById('taskInput');
+
+    if (taskInput) {
+        taskInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addTask();
+            }
+        });
+    }
 });

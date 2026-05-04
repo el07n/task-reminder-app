@@ -22,6 +22,7 @@ const pool = new Pool({
     family: 4
 });
 
+
 console.log('DB URL CHECK:', process.env.DATABASE_URL ? 'EXISTS' : 'MISSING');
 
 if (process.env.DATABASE_URL) {
@@ -89,13 +90,13 @@ app.post('/register', async (req, res) => {
         });
 
     } catch (err) {
-        console.log('REGISTER ERROR:', err);
+    console.log('ADD TASK ERROR:', err);
 
-        res.json({
-            success: false,
-            message: 'Database error: ' + err.message
-        });
-    }
+    res.status(500).json({
+        success: false,
+        error: err.message
+    });
+}
 });
 
 // LOGIN
