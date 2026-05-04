@@ -6,6 +6,10 @@
   box-sizing: border-box;
 }
 
+html {
+  background: #0f0c29;
+}
+
 body {
   font-family: 'Cairo', sans-serif;
   min-height: 100vh;
@@ -16,9 +20,9 @@ body {
   position: relative;
   overflow-x: hidden;
   padding: 20px;
+  color: white;
 }
 
-/* الخلفية المتحركة */
 body::before {
   content: '';
   position: fixed;
@@ -26,7 +30,7 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background: 
+  background:
     radial-gradient(ellipse at 20% 80%, rgba(120, 119, 198, 0.4) 0%, transparent 50%),
     radial-gradient(ellipse at 80% 20%, rgba(255, 119, 198, 0.4) 0%, transparent 50%),
     radial-gradient(ellipse at 40% 40%, rgba(99, 102, 241, 0.3) 0%, transparent 40%);
@@ -47,13 +51,13 @@ body::before {
   100% { transform: translate(0, 0) rotate(360deg); opacity: 0.5; }
 }
 
-/* تصميم الزجاج */
 .container {
   max-width: 800px;
   margin: 20px auto;
   padding: 30px;
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 30px;
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
@@ -90,33 +94,53 @@ h1 {
   flex-wrap: wrap;
 }
 
-input[type="text"], select, input[type="date"] {
+input[type="text"],
+input[type="date"],
+select,
+textarea {
   flex: 1;
   min-width: 150px;
   padding: 12px 15px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 2px solid rgba(255, 255, 255, 0.1) !important;
   border-radius: 10px;
-  color: #fff;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
   font-family: 'Cairo', sans-serif;
   font-size: 16px;
   transition: all 0.3s;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
-input[type="text"]::placeholder {
-  color: rgba(255, 255, 255, 0.5);
+input[type="text"]::placeholder,
+textarea::placeholder {
+  color: rgba(255, 255, 255, 0.5) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.5) !important;
 }
 
-input:focus, select:focus {
+input:focus,
+select:focus,
+textarea:focus {
   outline: none;
-  border-color: rgba(167, 139, 250, 0.5);
+  border-color: rgba(167, 139, 250, 0.5) !important;
   box-shadow: 0 0 15px rgba(167, 139, 250, 0.3);
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.85;
+}
+
+select option {
+  background: #302b63;
+  color: #ffffff;
 }
 
 button {
   padding: 12px 30px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  color: white !important;
   border: none;
   border-radius: 10px;
   font-family: 'Cairo', sans-serif;
@@ -145,16 +169,17 @@ button:hover {
   padding: 8px 20px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.8) !important;
   border-radius: 20px;
   cursor: pointer;
   transition: all 0.3s;
   font-family: 'Cairo', sans-serif;
 }
 
-.filter-btn.active, .filter-btn:hover {
+.filter-btn.active,
+.filter-btn:hover {
   background: rgba(255, 255, 255, 0.2);
-  color: white;
+  color: white !important;
   box-shadow: 0 0 15px rgba(167, 139, 250, 0.3);
 }
 
@@ -241,9 +266,10 @@ ul {
   border: none;
   font-size: 18px;
   background: rgba(255, 255, 255, 0.1);
-  color: white;
+  color: white !important;
   transition: all 0.2s;
   font-family: 'Cairo', sans-serif;
+  width: auto;
 }
 
 .complete-btn:hover { background: rgba(72, 187, 120, 0.3); transform: scale(1.1); }
@@ -277,9 +303,10 @@ ul {
 
 .edit-form input {
   flex: 1;
-  background: rgba(0, 0, 0, 0.3);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.3) !important;
+  color: white !important;
+  -webkit-text-fill-color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
   padding: 8px;
   border-radius: 5px;
   font-family: 'Cairo', sans-serif;
@@ -298,47 +325,58 @@ ul {
   font-size: 14px;
   width: auto;
 }
+
 @media (max-width: 768px) {
-    body {
-        background:
-            radial-gradient(circle at top left, #7c3aed55, transparent 35%),
-            radial-gradient(circle at bottom right, #2563eb55, transparent 35%),
-            linear-gradient(135deg, #17172f, #302653, #1d1b3a) !important;
-        color: white !important;
-    }
+  body {
+    padding: 15px;
+    background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #16213e) !important;
+    background-size: 400% 400% !important;
+    animation: gradientBG 15s ease infinite !important;
+  }
 
-    input,
-    select,
-    textarea {
-        background: rgba(255, 255, 255, 0.11) !important;
-        color: white !important;
-        border: 1px solid rgba(255, 255, 255, 0.18) !important;
-        box-shadow: none !important;
-    }
+  .container {
+    width: 100%;
+    margin: 10px auto;
+    padding: 22px;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-radius: 25px;
+  }
 
-    input::placeholder {
-        color: #c9c6d8 !important;
-    }
+  h1 {
+    font-size: 2em;
+  }
 
-    select {
-        appearance: none;
-        -webkit-appearance: none;
-    }
+  .input-area {
+    background: rgba(255, 255, 255, 0.08) !important;
+  }
 
-    select option {
-        background: #302653;
-        color: white;
-    }
+  .input-group {
+    flex-direction: column;
+  }
 
-    button {
-        color: white !important;
-    }
+  input[type="text"],
+  input[type="date"],
+  select,
+  textarea {
+    width: 100%;
+    min-width: 100%;
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+  }
 
-    .container,
-    .login-card,
-    .register-card {
-        background: rgba(255, 255, 255, 0.09) !important;
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
-    }
+  .task-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .task-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .icon-btn {
+    width: auto;
+  }
 }
