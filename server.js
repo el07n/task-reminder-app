@@ -29,6 +29,7 @@ if (process.env.DATABASE_URL) {
     console.log('DB USER:', dbUrl.username);
     console.log('DB HOST:', dbUrl.hostname);
     console.log('DB PORT:', dbUrl.port);
+    console.log('DB PASS LENGTH:', dbUrl.password.length);
 }
 
 // EMAIL
