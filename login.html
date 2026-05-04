@@ -235,33 +235,48 @@ h2 {
         <a href="register.html">سجل الآن</a>
     </p>
 </div>
-
 <script>
-function login() {
+async function login() {
     const errorBox = document.getElementById('errorBox');
 
-    fetch('https://task-reminder-app-i748.onrender.com', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            email: document.getElementById('email').value,
-            password: document.getElementById('password').value
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
+    errorBox.style.display = 'none';
+    errorBox.textContent = '';
+
+    try {
+        const res = await fetch('https://task-reminder-app-i748.onrender.com/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value
+            })
+        });
+
+        let data;
+        try {
+            data = await res.json();
+        } catch (jsonErr) {
+            const text = await res.text();
+            throw new Error(`HTTP ${res.status}: Server returned non-JSON response: ${text}`);
+        }
+
+        if (!res.ok) {
+            throw new Error(`HTTP ${res.status}: ${data.message || data.error || 'Request failed'}`);
+        }
+
         if (data.success) {
             localStorage.setItem('user_id', data.user.id);
             localStorage.setItem('user_email', data.user.email);
             window.location.href = 'index.html';
         } else {
-            errorBox.style.display = 'block';
+            throw new Error(data.message || data.error || 'Login failed');
         }
-    })
-    .catch(() => {
-        errorBox.textContent = 'تأكد أن السيرفر شغال';
+
+    } catch (err) {
+        console.error('LOGIN ERROR:', err);
+        errorBox.textContent = err.message;
         errorBox.style.display = 'block';
-    });
+    }
 }
 </script>
 
