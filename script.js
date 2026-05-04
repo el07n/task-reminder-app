@@ -1,4 +1,4 @@
-const BASE_URL = 'https://task-reminder-app-i748.onrender.com';
+const BASE_URL = 'https://task-reminder-app-i748.onrender.com/login';
 
 let tasks = [];
 let currentFilter = 'all';
