@@ -298,53 +298,47 @@ ul {
   font-size: 14px;
   width: auto;
 }
+@media (max-width: 768px) {
+    body {
+        background:
+            radial-gradient(circle at top left, #7c3aed55, transparent 35%),
+            radial-gradient(circle at bottom right, #2563eb55, transparent 35%),
+            linear-gradient(135deg, #17172f, #302653, #1d1b3a) !important;
+        color: white !important;
+    }
 
-@media (max-width: 600px) {
-  .container {
-    margin: 10px;
-    padding: 20px;
-  }
-  
-  h1 {
-    font-size: 1.8em;
-  }
-  
-  .input-group {
-    flex-direction: column;
-  }
-  
-  input, select, button {
-    width: 100%;
-  }
-  
-  .task-item {
-    flex-direction: column;
-    gap: 15px;
-    align-items: flex-start;
-  }
-  
-  .task-actions {
-    width: 100%;
-    justify-content: flex-end;
-  }
-}
-input,
-select,
-textarea {
-    background: rgba(255, 255, 255, 0.12) !important;
-    color: white !important;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
+    input,
+    select,
+    textarea {
+        background: rgba(255, 255, 255, 0.11) !important;
+        color: white !important;
+        border: 1px solid rgba(255, 255, 255, 0.18) !important;
+        box-shadow: none !important;
+    }
 
-input::placeholder {
-    color: rgba(255, 255, 255, 0.7);
-}
+    input::placeholder {
+        color: #c9c6d8 !important;
+    }
 
-select option {
-    color: black;
-    background: white;
-}
+    select {
+        appearance: none;
+        -webkit-appearance: none;
+    }
 
-button {
-    color: white;
+    select option {
+        background: #302653;
+        color: white;
+    }
+
+    button {
+        color: white !important;
+    }
+
+    .container,
+    .login-card,
+    .register-card {
+        background: rgba(255, 255, 255, 0.09) !important;
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+    }
 }
