@@ -328,3 +328,23 @@ ul {
     justify-content: flex-end;
   }
 }
+input,
+select,
+textarea {
+    background: rgba(255, 255, 255, 0.12) !important;
+    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+select option {
+    color: black;
+    background: white;
+}
+
+button {
+    color: white;
+}
